@@ -275,7 +275,7 @@ client.on("interactionCreate", async (interaction) => {
                 const memberData = sql.prepare(`SELECT * FROM TheLostBattlion WHERE userid = (?)`).get(member.id);
                 let currentStrikeNumber = 1;
                 let memberStrikes = [];
-                const strikeTillDate = moment().add(7, "days").unix();
+                const strikeTillDate = moment().add(14, "days").unix();
                 if (memberData !== undefined) {
                     currentStrikeNumber = parseInt(memberData?.strikeNumber) + 1;
                     memberStrikes = JSON.parse(memberData?.strikes);
