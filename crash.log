@@ -1,0 +1,5 @@
+TypeError: Cannot read properties of undefined (reading 'stack')
+    at process.<anonymous> (file:///home/runner/The-Lost-Battalion/index.js:502:42)
+    at process.emit (node:events:514:28)
+    at node:internal/process/promises:139:17
+    at process.processTicksAndRejections (node:internal/process/task_queues:77:11)

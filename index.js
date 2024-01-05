@@ -8,6 +8,7 @@ import sqlite from "better-sqlite3";
 import cron from "cron";
 import moment from "moment";
 import Color from "color";
+import fs from "fs-extra";
 /* -----WEB SERVER----- */ // - To keep it running on repl.it
 const server = express();
 server.use(cors());
@@ -67,7 +68,11 @@ const strikeClearer = new cron.CronJob("* * * * *", () => {
                 const strikeChannel = await client.channels.fetch(strikeChannelId);
                 if (strikeChannel?.isTextBased()) {
                     const strikeMessage = (await strikeChannel.messages.fetch()).find((msg) => msg.id === strike.messageid);
-                    const strikeEmbed = strikeMessage?.embeds[0];
+                    if (!strikeMessage)
+                        return;
+                    const strikeEmbed = JSON.parse(JSON.stringify(strikeMessage?.embeds[0]));
+                    if (!strikeEmbed)
+                        return;
                     strikeEmbed.description = `${strikeEmbed?.description}\n**\`This strike has been cleared\`**`;
                     const updatedStrikelog = {
                         ...strikelog,
@@ -486,3 +491,13 @@ client.on("interactionCreate", async (interaction) => {
     }
 });
 client.login(process.env.BOT_TOKEN);
+fs.ensureFileSync("crash.log");
+process.on("unhandledRejection", (reason) => {
+    fs.writeFileSync("crash.log", reason.stack);
+}).on("uncaughtException", (err) => {
+    fs.writeFileSync("crash.log", err.stack);
+}).on("uncaughtExceptionMonitor", (err) => {
+    fs.writeFileSync("crash.log", err.stack);
+}).on("multipleResolves", (type, promise, reason) => {
+    fs.writeFileSync("crash.log", reason.stack);
+});
