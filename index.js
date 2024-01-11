@@ -493,11 +493,9 @@ client.on("interactionCreate", async (interaction) => {
 client.login(process.env.BOT_TOKEN);
 fs.ensureFileSync("crash.log");
 process.on("unhandledRejection", (reason) => {
-    fs.writeFileSync("crash.log", reason.stack);
+  console.log(reason)
+    fs.appendFileSync("crash.log", `\n${reason}`);
 }).on("uncaughtException", (err) => {
-    fs.writeFileSync("crash.log", err.stack);
-}).on("uncaughtExceptionMonitor", (err) => {
-    fs.writeFileSync("crash.log", err.stack);
-}).on("multipleResolves", (type, promise, reason) => {
-    fs.writeFileSync("crash.log", reason.stack);
+  console.log(err)
+  fs.appendFileSync("crash.log", `\n${err}`);
 });
